@@ -2,7 +2,7 @@
 ![Harmony logo small](https://raw.githubusercontent.com/wiki/Microchip-MPLAB-Harmony/Microchip-MPLAB-Harmony.github.io/images/microchip_mplab_harmony_logo_small.png)
 
 # MPLAB® Harmony 3 Touch Host Driver
-
+MPLAB® Harmony 3 Touch Host Driver acts as an interface between the Turnkey devices and the Host microcontrollers for configuring and controlling various parameters of Turnkey devices.
 MPLAB® Harmony 3 is an extension of the MPLAB® ecosystem for creating embedded firmware solutions for Microchip 32-bit SAM and PIC® microcontroller and microprocessor devices.  Refer to the following links for more information.
 
 - [Microchip 32-bit MCUs](https://www.microchip.com/design-centers/32-bit)

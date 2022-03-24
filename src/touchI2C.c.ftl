@@ -1,11 +1,11 @@
 /*******************************************************************************
-  MPLAB Harmony Application Source File
+   MPLAB Harmony Touch Host Interface ${REL_VER} Release
   
   Company:
     Microchip Technology Inc.
   
   File Name:
-    app.c
+    touchI2C.c
 
   Summary:
     This file contains the source code for the MPLAB Harmony application.
@@ -23,7 +23,7 @@
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) ${REL_YEAR} Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your

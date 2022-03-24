@@ -1,5 +1,5 @@
 /*******************************************************************************
-  Main Source File
+  MPLAB Harmony Touch Host Interface ${REL_VER} Release
 
   Company:
     Microchip Technology Inc.
@@ -8,7 +8,7 @@
     host_example.c
 
   Summary:
-    This file contains the "main" function for a project.
+    This file contains the example "main" function for a project.
 
   Description:
     This file contains the "main" function for a project.  The

@@ -6,6 +6,8 @@ try:
 except (NameError):
     pass
 
+releaseVersion = "v1.0.0"
+releaseYear    = "2022"
 touchTurnkeyDB = {
 'NO_DEVICE_SELECTED': {'interface': 'None', 'interruptPin': 'None'},
 'AT42QT2120': {'interface': 'i2c', 'interruptPin': True},
@@ -347,3 +349,11 @@ def instantiateComponent(comp):
     touchSystemDefFile.setOutputName("core.LIST_SYSTEM_DEFINITIONS_H_INCLUDES")
     touchSystemDefFile.setSourcePath("/src/system/definitions.h.ftl")
     touchSystemDefFile.setMarkup(True)
+
+    getreleaseVersion = comp.createStringSymbol("REL_VER", None)
+    getreleaseVersion.setDefaultValue(releaseVersion)
+    getreleaseVersion.setVisible(False)
+
+    getreleaseYear = comp.createStringSymbol("REL_YEAR", None)
+    getreleaseYear.setDefaultValue(releaseYear)
+    getreleaseYear.setVisible(False)

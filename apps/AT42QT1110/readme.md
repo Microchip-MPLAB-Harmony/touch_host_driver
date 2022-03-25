@@ -14,6 +14,6 @@ The following table provides links to documentation on how to build and run the 
 
 | Development Kit |
 | --- |
-| [SAMD21 Xplained Pro Development Board](docs/readme_sam_d21_xpro.md) |
-| [SAME54 Xplained Pro Development Board](docs/readme_sam_e54_xpro.md) |
-| [SAMC21 Xplained Pro Development Board](docs/readme_sam_c21_xpro.md) |
+| [SAMD21 Xplained Pro Development Board](firmware/docs/readme_sam_d21_xpro.md) |
+| [SAME54 Xplained Pro Development Board](firmware/docs/readme_sam_e54_xpro.md) |
+| [SAMC21 Xplained Pro Development Board](firmware/docs/readme_sam_c21_xpro.md) |

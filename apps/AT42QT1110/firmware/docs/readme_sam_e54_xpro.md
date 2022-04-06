@@ -4,7 +4,8 @@ parent: AT42QT1110 Examples
 title: SAME54 Xplained Pro
 has_toc: false
 ---
-[![MCHP](https://www.microchip.com/ResourcePackages/Microchip/assets/dist/images/logo.png)](https://www.microchip.com)
+![Microchip logo](../../../../images/microchip_logo.png)
+![Harmony logo small](../../../../images/microchip_mplab_harmony_logo_small.png)
 
 #  SAME54 Xplained PRO and AT42QT1110 EVK Example 
 

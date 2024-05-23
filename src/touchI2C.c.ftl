@@ -70,39 +70,36 @@
 
 static uintptr_t touchI2c;
 
-volatile static uint8_t i2cWriteBuffer[CIRCULAR_BUFFER_LEN];
-volatile static uint8_t i2cReadBuffer[CIRCULAR_BUFFER_LEN];
+static uint8_t i2cWriteBuffer[CIRCULAR_BUFFER_LEN];
+static uint8_t i2cReadBuffer[CIRCULAR_BUFFER_LEN];
 static uint8_t mode;
-volatile static uint8_t slaveAddress = 0;
-volatile static uint8_t rxInProgress;
-volatile static uint8_t txInProgress;
-volatile static uint8_t memAddress;
-
-typedef  void(*callbackTx_T)(void);
-typedef  void(*callbackRx_T)(uint8_t);
+static uint8_t slaveAddressI2C = 0u;
+static uint8_t rxInProgress;
+static uint8_t txInProgress;
+static uint8_t memAddress;
 
 static callbackTx_T txCompleteCallback;
 static callbackRx_T rxCompleteCallback;
 
-static void touchI2cTxComplete(uintptr_t touchI2c){
-    txInProgress = 0;
+static void touchI2cTxComplete(uintptr_t touchI2cTemp){
+    txInProgress = 0u;
     if(txCompleteCallback != NULL){
         txCompleteCallback();
     }
 }
 
-static void touchI2cRxComplete(uintptr_t touchI2c){
-    rxInProgress = 0;
+static void touchI2cRxComplete(uintptr_t touchI2cTemp){
+    rxInProgress = 0u;
     if(rxCompleteCallback != NULL){
         rxCompleteCallback(i2cReadBuffer[0]);
     }
 }
 
-static void touchI2cCompleteCallback(uintptr_t touchI2c){
-    if(mode == 0){
-        touchI2cTxComplete(touchI2c);
+static void touchI2cCompleteCallback(uintptr_t touchI2cTemp){
+    if(mode == 0u){
+        touchI2cTxComplete(touchI2cTemp);
     } else {
-        touchI2cRxComplete(touchI2c);
+        touchI2cRxComplete(touchI2cTemp);
     }
 }
 
@@ -118,7 +115,7 @@ void touchI2cInit(callbackTx_T txCallback, callbackRx_T rxCallback) {
     txCompleteCallback = txCallback;
     rxCompleteCallback = rxCallback;
     
-    ${TOUCH_SERCOM_TURNKEY}_CallbackRegister(touchI2cCompleteCallback, touchI2c);
+    (void) ${TOUCH_SERCOM_TURNKEY}_CallbackRegister(touchI2cCompleteCallback, touchI2c);
 }
 
 /**
@@ -126,8 +123,8 @@ void touchI2cInit(callbackTx_T txCallback, callbackRx_T rxCallback) {
  * 
  * @param slaveAddr I2C Slave address
  */
-void touchI2cSetSlaveAddress(uint8_t slaveAddr){
-    slaveAddress = slaveAddr;
+void touchI2cSetSlaveAddress(uint8_t slaveAddrTemp) {
+    slaveAddressI2C = slaveAddrTemp;
 }
 
 /**
@@ -136,55 +133,61 @@ void touchI2cSetSlaveAddress(uint8_t slaveAddr){
  * @param memAddr address of the memory
  */
 void touchI2cSetMemoryAddrss(uint8_t memAddr){
-    txInProgress = 1;
-    mode = 0;
+    txInProgress = 1u;
+    mode = 0u;
     memAddress = memAddr;
-    ${TOUCH_SERCOM_TURNKEY}_Write(slaveAddress, (uint8_t *) &memAddress, 1);
-    while(txInProgress);
+    (void) ${TOUCH_SERCOM_TURNKEY}_Write(slaveAddressI2C, (uint8_t *) &memAddress, 1u);
+    while(txInProgress != 0u) {
+        /* wait for completion */
+    }
 }
 
 /**
  * @brief This function writes one byte of data. This is a blocking code.
  * Before calling this function, the memory address and slave address 
- * to which this data to be written must be set using touchI2cSetMemoryAddrss() and touchI2cSetSlaveAddress() 
+ * to which this data to be written must be set using touchI2cSetMemoryAddrss() and touchI2cSetslaveAddress() 
  * for the very first byte.
  * The memory address is increased later on in this function.
  * 
  * Usage: \n 
- * touchI2cSetSlaveAddress(0x25); \n 
- * touchI2cSetMemoryAddrss(0x10); // Memory address is 0x10 \n 
+ * touchI2cSetslaveAddress(0x25); \n 
+ * touchI2cSetMemoryAddrss(0x10); Memory address is 0x10 \n 
  * for(uint8_t cnt = 0; cnt < 10; cnt ++) touchI2cWriteByte(buffer[cnt]);
  * 
  */
 void touchI2cWriteByte(uint8_t data){
-    txInProgress = 1;
-    mode = 0;
+    txInProgress = 1u;
+    mode = 0u;
     i2cWriteBuffer[0] = memAddress;
     i2cWriteBuffer[1] = data;
     memAddress++;
-    ${TOUCH_SERCOM_TURNKEY}_Write(slaveAddress, (uint8_t *) i2cWriteBuffer, 2);
-    while(txInProgress);
+    (void) ${TOUCH_SERCOM_TURNKEY}_Write(slaveAddressI2C, (uint8_t *) i2cWriteBuffer, 2u);
+    while(txInProgress != 0u) {
+        /* wait for completion */
+    }
 }
 
 /**
  * @brief This function reads one byte of data. This is a blocking code.
  * Before calling this function, the memory address and slave address 
- * to which this data to be written must be set using touchI2cSetMemoryAddrss() and touchI2cSetSlaveAddress() 
+ * to which this data to be written must be set using touchI2cSetMemoryAddrss() and touchI2cSetslaveAddress() 
  * for the very first byte.
  * The memory address is increased later on in this function.
  * 
  * Usage: \n 
- * touchI2cSetSlaveAddress(0x25); \n 
- * touchI2cSetMemoryAddrss(0x10); // Memory address is 0x10 \n 
+ * touchI2cSetslaveAddress(0x25); \n 
+ * touchI2cSetMemoryAddrss(0x10); Memory address is 0x10 \n 
  * for(uint8_t cnt = 0; cnt < 10; cnt ++) buffer[cnt] = touchI2cReadByte();
  * 
  * @return uint8_t returns read data
  */
 uint8_t touchI2cReadByte(void){
-    rxInProgress = 1;
-    mode = 1;
-    ${TOUCH_SERCOM_TURNKEY}_Read(slaveAddress, (uint8_t *) i2cReadBuffer, 1);
-    while(rxInProgress);
+    rxInProgress = 1u;
+    mode = 1u;
+    (void) ${TOUCH_SERCOM_TURNKEY}_Read(slaveAddressI2C, (uint8_t *) i2cReadBuffer, 1u);
+    while(rxInProgress != 0u) {
+        /* wait for completion */
+    }
     
     return i2cReadBuffer[0];
 }
@@ -206,17 +209,17 @@ uint8_t touchI2cReadByte(void){
 void touchI2cSendDataToAddress(uint8_t slaveAddr, uint8_t memAddr, uint8_t *dataptr, transferSize_t len){
     
     uint8_t *ptr = (uint8_t *) &i2cWriteBuffer[0];
-    mode = 0;
+    mode = 0u;
     
     /// copy the data to local buffer. First data is memAddr
     i2cWriteBuffer[0] = memAddr;
     ptr = (uint8_t *) &i2cWriteBuffer[1];
     
-    for(transferSize_t cnt = 0; cnt < len; cnt++){
+    for(transferSize_t cnt = 0u; cnt < len; cnt++){
         ptr[cnt] = dataptr[cnt];
     }
     
-    ${TOUCH_SERCOM_TURNKEY}_Write((uint16_t)slaveAddr, (uint8_t *) &i2cWriteBuffer[0], len+1);
+    (void) ${TOUCH_SERCOM_TURNKEY}_Write((uint16_t)slaveAddr, (uint8_t *) &i2cWriteBuffer[0], (uint32_t) len+1u);
 }
 
 /**
@@ -236,12 +239,74 @@ void touchI2cSendDataToAddress(uint8_t slaveAddr, uint8_t memAddr, uint8_t *data
  */
 void touchI2cReceiveDataFromAddress(uint8_t slaveAddr, uint8_t memAddr, uint8_t *dataptr, transferSize_t len){
     
-    mode = 1;
+    mode = 1u;
    
     i2cWriteBuffer[0] = memAddr;
 
-    ${TOUCH_SERCOM_TURNKEY}_WriteRead((uint16_t)slaveAddr, (uint8_t *) &i2cWriteBuffer[0], 1, dataptr, len);
+    (void) ${TOUCH_SERCOM_TURNKEY}_WriteRead((uint16_t)slaveAddr, (uint8_t *) &i2cWriteBuffer[0], 1u, dataptr, (uint32_t) len);
 }
+
+/**
+ * @brief This function send data "len" number of data from address "memAddr".
+ * It sends write command with first address being memAddr. 
+ * This is a non-blocking code.
+ * The completion is indicated by txCallback function registered in touchI2cInit 
+ * 
+ * Usage: \n 
+ * touchI2cSendDataTo_16bit_Address(0x25, 0x10, &buffer[0], 10);
+ * 
+ * @param slaveAddr slave address
+ * @param memAddr memory address to which data must be written
+ * @param dataptr pointer from which data must be written
+ * @param len length of data that must be written
+ */
+void touchI2cSendDataTo_16bit_Address(uint8_t slaveAddr, uint16_t memAddr, const uint8_t *dataptr, transferSize_t len)
+{
+    uint8_t *ptr  = (uint8_t *) &i2cWriteBuffer[0];
+    uint8_t *addr = (uint8_t *) &memAddr;
+    
+    mode = 0u;
+    
+    /// copy the data to local buffer. First data is memAddr
+    i2cWriteBuffer[0] = addr[1];    // MEMORY ADDESS
+    i2cWriteBuffer[1] = addr[0];    // MEMORY OFFSET
+    
+    ptr = (uint8_t *) &i2cWriteBuffer[2];
+    
+    for(transferSize_t cnt = 0u; cnt < len; cnt++){
+        ptr[cnt] = dataptr[cnt];
+    }
+    
+    (void) ${TOUCH_SERCOM_TURNKEY}_Write((uint16_t)slaveAddr, (uint8_t *) &i2cWriteBuffer[0], (uint32_t) len+2u);
+}
+
+/**
+ * @brief This function receives data "len" number of data from address "memAddr".
+ * First it sents a I2C write command with data as "memAddr"
+ * Second it sends I2C read command for length defined by "len"
+ * This is a non-blocking code.
+ * The completion is indicated by rxCallback function registered in touchI2cInit 
+ * 
+ * Usage: \n 
+ * touchI2cReceiveDataFrom_16bit_Address(0x25, 0x10, &buffer[0], 10);
+ * 
+ * @param slaveAddr slave address
+ * @param memAddr memory address from which data must be read
+ * @param dataptr pointer to which data must be read
+ * @param len length of data that must be read
+ */
+void touchI2cReceiveDataFrom_16bit_Address(uint8_t slaveAddr, uint16_t memAddr, uint8_t *dataptr, transferSize_t len)
+{
+    uint8_t *addr = (uint8_t *) &memAddr;
+    
+    mode = 1u;
+   
+    i2cWriteBuffer[0] = addr[1];
+    i2cWriteBuffer[1] = addr[0];
+
+    (void) ${TOUCH_SERCOM_TURNKEY}_WriteRead((uint16_t)slaveAddr, (uint8_t *) &i2cWriteBuffer[0], 2u, dataptr, (uint32_t) len);
+}
+
 
 
 /*******************************************************************************

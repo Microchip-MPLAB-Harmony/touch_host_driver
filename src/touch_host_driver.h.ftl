@@ -43,8 +43,8 @@
  *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _TOUCH_HOST_DRIVER_H    /* Guard against multiple inclusion */
-#define _TOUCH_HOST_DRIVER_H
+#ifndef TOUCH_HOST_DRIVER_H    /* Guard against multiple inclusion */
+#define TOUCH_HOST_DRIVER_H
 
 
 /* ************************************************************************** */
@@ -79,7 +79,7 @@ typedef uint16_t transferSize_t;
 #endif
 
 typedef  void(*callbackTx_T)(void);
-typedef  void(*callbackRx_T)(uint8_t);
+typedef  void(*callbackRx_T)(uint8_t callback);
 
 #define SYS_TIME_RESOLUTION_MSEC 10u
 
@@ -88,7 +88,7 @@ typedef  void(*callbackRx_T)(uint8_t);
 }
 #endif
 
-#endif /* _TOUCH_HOST_DRIVER_H */
+#endif /* TOUCH_HOST_DRIVER_H */
 
 /* *****************************************************************************
  End of File

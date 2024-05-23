@@ -6,16 +6,17 @@ try:
 except (NameError):
     pass
 
-releaseVersion = "v1.0.0"
-releaseYear    = "2022"
+releaseVersion = "v1.1.0"
+releaseYear    = "2024"
 touchTurnkeyDB = {
 'NO_DEVICE_SELECTED': {'interface': 'None', 'interruptPin': 'None'},
+'MTCH2120': {'interface': 'i2c', 'interruptPin': True},
 'AT42QT2120': {'interface': 'i2c', 'interruptPin': True},
 'AT42QT1110': {'interface': 'spi', 'interruptPin': True}
 }
 
-masterFileList = { 'SOURCE':['touchI2C.c.ftl', 'touchSPI.c.ftl', 'touchUart.c.ftl','touchTune.c.ftl'],
-                    'HEADER':['touchI2C.h', 'touchSPI.h', 'touchUart.h','touchTune.h']
+masterFileList = { 'SOURCE':['touchI2C.c.ftl', 'touchSPI.c.ftl', 'touchUart.c.ftl','touchTune.c.ftl','touchTuneMTCH2120.c.ftl'],
+                    'HEADER':['touchI2C.h', 'touchSPI.h', 'touchUart.h','touchTune.h','touchTuneMTCH2120.h','mtch2120_api_examples.h.ftl','mtch2120_host_example.h']
                     }
 
 destinationFolder = "/touch_host_interface/"
@@ -25,7 +26,7 @@ possibleInterfaces = []
 configName = ""
 
 def destroyComponent(touch_turnkey):
-    print "Destroy touch module"
+    print ("Destroy touch module")
 
 def finalizeComponent(touch_turnkey):
     """
@@ -43,8 +44,15 @@ def finalizeComponent(touch_turnkey):
 def interruptPinOption(symbol, event):
     print(event)
     localComp = symbol.getComponent()
-    localSymbol1 = localComp.getSymbolByID("CHANGE_PIN_WARNING")
-    localSymbol2 = localComp.getSymbolByID("CHANGE_PIN_NAME")
+    devName = localComp.getSymbolByID("SELECT_TURNKEY_DEVICE").getValue()
+
+    if devName=="MTCH2120":
+        localSymbol1 = localComp.getSymbolByID("INT_PIN_WARNING")
+        localSymbol2 = localComp.getSymbolByID("INT_PIN_NAME")
+    else:
+        localSymbol1 = localComp.getSymbolByID("CHANGE_PIN_WARNING")
+        localSymbol2 = localComp.getSymbolByID("CHANGE_PIN_NAME")
+    
     if event['value']:
         localSymbol1.setVisible(True)
         localSymbol2.setVisible(True)
@@ -54,18 +62,24 @@ def interruptPinOption(symbol, event):
 
 def tuningOptionUpdate(symbol, event):
     print(event)
-    localComp1 = symbol.getComponent()
-    devName = localComp1.getSymbolByID("SELECT_TURNKEY_DEVICE").getValue()
     localComp = symbol.getComponent()
-
+    devName = localComp.getSymbolByID("SELECT_TURNKEY_DEVICE").getValue()
     localComp.setDependencyEnabled("Touch_Tune_UART", event['value'])
 
     if event['value']:
-        localSymbol = localComp.getSymbolByID("HEADER_touchTune.h")
-        localSymbol.setSourcePath("/src/touchTune.h")
-        localSymbol.setOutputName("touchTune.h")
-        localSymbol.setEnabled(True)
 
+        if devName=="MTCH2120":
+            localSymbol = localComp.getSymbolByID("HEADER_touchTune.h")
+            localSymbol.setSourcePath("/src/touchTuneMTCH2120.h")
+            localSymbol.setOutputName("touchTune.h")
+            localSymbol.setEnabled(True)
+
+        else:
+            localSymbol = localComp.getSymbolByID("HEADER_touchTune.h")
+            localSymbol.setSourcePath("/src/touchTune.h")
+            localSymbol.setOutputName("touchTune.h")
+            localSymbol.setEnabled(True)
+            
         localSymbol = localComp.getSymbolByID("TUNE_SOURCE")
         localSymbol.setSourcePath("/src/touchTune"+devName+".c.ftl")
         localSymbol.setMarkup(True)
@@ -87,11 +101,45 @@ def processDeviceFiles(deviceName, localComp):
     localSymbol = localComp.getSymbolByID("TURNKEY_COMMON_HEADER")
     localSymbol.setEnabled(False)
 
+    localSymbol = localComp.getSymbolByID("ENABLE_INT_PIN")
+    localSymbol.setVisible(False)
+    localSymbol = localComp.getSymbolByID("INT_PIN_NAME")
+    localSymbol.setVisible(False)
+    localSymbol = localComp.getSymbolByID("INT_PIN_WARNING")
+    localSymbol.setVisible(False)
+    localSymbol = localComp.getSymbolByID("ENABLE_CHANGE_PIN")
+    localSymbol.setVisible(False)
+    localSymbol = localComp.getSymbolByID("CHANGE_PIN_NAME")
+    localSymbol.setVisible(False)
+    localSymbol = localComp.getSymbolByID("CHANGE_PIN_WARNING")
+    localSymbol.setVisible(False)
+
     if deviceName != "NO_DEVICE_SELECTED".lower():
-        localSymbol = localComp.getSymbolByID("TURNKEY_HEADER")
-        localSymbol.setSourcePath("/src/"+deviceName+".h")
-        localSymbol.setOutputName(deviceName+".h")
-        localSymbol.setEnabled(True)
+
+        if deviceName == "MTCH2120".lower():
+            localSymbol = localComp.getSymbolByID("TURNKEY_HEADER")
+            localSymbol.setSourcePath("/src/"+deviceName+".h.ftl")
+            localSymbol.setOutputName(deviceName+".h")
+            localSymbol.setEnabled(True)
+            localSymbol.setMarkup(True)
+
+            localSymbol1 = localComp.getSymbolByID("API_EXAMPLE")
+            localSymbol1.setSourcePath("/src/mtch2120_api_examples.h.ftl")
+            localSymbol1.setOutputName("mtch2120_api_examples.h")
+            localSymbol1.setEnabled(True)
+            localSymbol.setMarkup(True)
+
+            localSymbol2 = localComp.getSymbolByID("HOST_EXAMPLE_HEADER")
+            localSymbol2.setSourcePath("/src/mtch2120_host_example.h")
+            localSymbol2.setOutputName("mtch2120_host_example.h")
+            localSymbol2.setEnabled(True)
+                   
+        
+        else:
+            localSymbol = localComp.getSymbolByID("TURNKEY_HEADER")
+            localSymbol.setSourcePath("/src/"+deviceName+".h")
+            localSymbol.setOutputName(deviceName+".h")
+            localSymbol.setEnabled(True)            
 
         localSymbol = localComp.getSymbolByID("TURNKEY_SOURCE")
         localSymbol.setSourcePath("/src/"+deviceName+".c.ftl")
@@ -118,23 +166,51 @@ def processDeviceFiles(deviceName, localComp):
         localSymbol = localComp.getSymbolByID("TURNKEY_COMMON_HEADER")
         localSymbol.setEnabled(False)
 
+
+    if deviceName == "MTCH2120".lower():
+        localSymbol = localComp.getSymbolByID("ENABLE_INT_PIN")
+        localSymbol.setEnabled(True)
+        localSymbol.setVisible(True)
+        localSymbol = localComp.getSymbolByID("INT_PIN_NAME")
+        localSymbol.setVisible(True)
+        localSymbol = localComp.getSymbolByID("INT_PIN_WARNING")
+        localSymbol.setVisible(True)
+    elif deviceName != "NO_DEVICE_SELECTED".lower():
+        localSymbol = localComp.getSymbolByID("ENABLE_CHANGE_PIN")
+        localSymbol.setEnabled(True)
+        localSymbol = localComp.getSymbolByID("CHANGE_PIN_NAME")
+        localSymbol.setVisible(True)
+        localSymbol = localComp.getSymbolByID("CHANGE_PIN_WARNING")
+        localSymbol.setVisible(True)
+
 def deviceSelectCallback(symbol,event):
     tempdatabase = touchTurnkeyDB[symbol.getValue()]
     localComp = symbol.getComponent()
     print(tempdatabase)
     deviceName = event['value'].lower()
-    
-    localComp.setDependencyEnabled("Touch_i2c", False)
-    localComp.setDependencyEnabled("Touch_spi", False)
-    localComp.setDependencyEnabled("Touch_uart", False)
-
-    for inter in possibleInterfaces:
-        if inter in tempdatabase['interface']:
+    for inter in ["i2c", "spi", "uart"]:
+        if inter not in tempdatabase['interface']:
+            localComp.setDependencyEnabled("Touch_"+inter, False)
+        else:
             localComp.setDependencyEnabled("Touch_"+inter, True)
             if inter == "spi":
                 localComp.getSymbolByID("SLAVE_SELECT_SPI_WARNING").setVisible(True)
-
+ 
     processDeviceFiles(deviceName, localComp)
+    
+    # localComp.setDependencyEnabled("Touch_i2c", False)
+    # localComp.setDependencyEnabled("Touch_spi", False)
+    # localComp.setDependencyEnabled("Touch_uart", False)
+
+    # localComp.getSymbolByID("SLAVE_SELECT_SPI_WARNING").setVisible(False)
+
+    # for inter in possibleInterfaces:
+    #     if inter in tempdatabase['interface']:
+    #         localComp.setDependencyEnabled("Touch_"+inter, True)
+    #         if inter == "spi":
+    #             localComp.getSymbolByID("SLAVE_SELECT_SPI_WARNING").setVisible(True)
+
+    # processDeviceFiles(deviceName, localComp)
 
 def processTurnkeyInterfaceFiles(interface, localComp):
     for item in masterFileList:
@@ -155,27 +231,58 @@ def onAttachmentConnected(source,target):
     print(targetID, sourceID)
     interface = sourceID.replace("Touch_", "")
     processTurnkeyInterfaceFiles(interface, localComp)
-    Database.setSymbolValue("core", "systickEnable", True)
+
 
     if sourceID != "Touch_Tune_UART":
         for inter in possibleInterfaces:
             if inter in tempdatabase['interface']:
                 if inter.lower() not in sourceID:
                     localComp.setDependencyEnabled("Touch_"+inter, False)
-
+        localSymbol4=localComp.getSymbolByID("ENABLE_SYSTICK_FUNCTIONS")
+        localSymbol4.clearValue()
         localSymbol = localComp.getSymbolByID("TOUCH_SERCOM_TURNKEY")
         localSymbol.clearValue()
-        localSymbol.setValue(targetID.upper())
+        peripheralNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals")
+        for index in range (0, len(peripheralNode.getChildren())):
+            if (peripheralNode.getChildren()[index].getAttribute("name") == "I2C"): 
+                if(peripheralNode.getChildren()[index].getAttribute("id") in ["01441"]):
+                    localSymbol.setValue(targetID.upper().split("_")[0])
+                    localSymbol4.setValue(False)
+                    break
+            else:
+                localSymbol.setValue(targetID.upper())
+                localSymbol4.setValue(True)
+                
+        
         localSymbol2 = localComp.getSymbolByID("TOUCH_INTERFACE_TURNKEY")
         localSymbol2.clearValue()
         localSymbol2.setValue(interface)
         if(localSymbol2.getValue() == "spi"):
              Database.setSymbolValue(localSymbol.getValue().split("_")[0].lower(), "SPI_CLOCK_PHASE", 1)
              Database.setSymbolValue(localSymbol.getValue().split("_")[0].lower(), "SPI_CLOCK_POLARITY", 1)
+
+        localSymbol3 = localComp.getSymbolByID("TOUCH_SERCOM_ENUM_TURNKEY")
+        localSymbol3.clearValue()
+        for index in range (0, len(peripheralNode.getChildren())):
+            if (peripheralNode.getChildren()[index].getAttribute("name") == "I2C"): 
+                if(peripheralNode.getChildren()[index].getAttribute("id") in ["01441"]):
+                    localSymbol3.setValue(targetID.upper().split("_")[1])
+                    break
+            else:
+                localSymbol3.setValue(targetID.upper().replace((targetID.upper())[6],"",1))
+                
     else:
         localSymbol = localComp.getSymbolByID("TOUCH_SERCOM_TUNE")
         localSymbol.clearValue()
-        localSymbol.setValue(targetID.upper().replace("UART","USART"))
+        peripheralNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals")
+        for index in range (0, len(peripheralNode.getChildren())):
+            if (peripheralNode.getChildren()[index].getAttribute("name") == "UART"): 
+                if(peripheralNode.getChildren()[index].getAttribute("id") in ["02478"]):
+                    localSymbol.setValue(targetID.upper().split("_")[0].replace("USART","UART"))
+                    break
+            else:
+                localSymbol.setValue(targetID.upper().replace("UART","USART"))
+                
         
 
 def onAttachmentDisconnected(source,target):
@@ -239,10 +346,26 @@ def instantiateComponent(comp):
     deviceSelect.setLabel("Select Turnkey Device")
     deviceSelect.setDependencies(deviceSelectCallback,["SELECT_TURNKEY_DEVICE"])
 
+    interruptPinEnable = comp.createBooleanSymbol("ENABLE_INT_PIN", None)
+    interruptPinEnable.setLabel("Enable INT Pin")
+    interruptPinEnable.setDefaultValue(False)
+    interruptPinEnable.setDependencies(interruptPinOption,["ENABLE_INT_PIN"])
+    interruptPinEnable.setVisible(False)
+
+    interruptPinName = comp.createStringSymbol("INT_PIN_NAME", None)
+    interruptPinName.setLabel("INTERRUPT Pin Name")
+    interruptPinName.setDefaultValue("INT_PIN")
+    interruptPinName.setVisible(False)
+
+    intPinWarning = comp.createCommentSymbol("INT_PIN_WARNING", None)
+    intPinWarning.setLabel("Warning!!! Configure Interrupt Pin as input with Pull up enabled")
+    intPinWarning.setVisible(False) 
+
     interruptPinEnable = comp.createBooleanSymbol("ENABLE_CHANGE_PIN", None)
     interruptPinEnable.setLabel("Enable CHANGE Pin")
     interruptPinEnable.setDefaultValue(False)
     interruptPinEnable.setDependencies(interruptPinOption,["ENABLE_CHANGE_PIN"])
+    interruptPinEnable.setVisible(False)
 
     interruptPinName = comp.createStringSymbol("CHANGE_PIN_NAME", None)
     interruptPinName.setLabel("CHANGE Pin Name")
@@ -251,8 +374,9 @@ def instantiateComponent(comp):
 
     intPinWarning = comp.createCommentSymbol("CHANGE_PIN_WARNING", None)
     intPinWarning.setLabel("Warning!!! CHANGE PIN needs to be configured in Pin Manager")
-    intPinWarning.setVisible(False)
-
+    intPinWarning.setVisible(False)              
+    
+    
     tuneOption = comp.createBooleanSymbol("ENABLE_TUNE_OPTION", None)
     tuneOption.setLabel("Enable Tuning option")
     tuneOption.setDefaultValue(False)
@@ -275,6 +399,20 @@ def instantiateComponent(comp):
     turnkeyHeader.setMarkup(False)
     turnkeyHeader.setEnabled(False)
 
+    turnkeyHeader = comp.createFileSymbol("API_EXAMPLE", None)
+    turnkeyHeader.setDestPath(destinationFolder)
+    turnkeyHeader.setProjectPath("config/" + configName + destinationFolder)
+    turnkeyHeader.setType("HEADER")
+    turnkeyHeader.setMarkup(False)
+    turnkeyHeader.setEnabled(False)
+
+    turnkeyHeader = comp.createFileSymbol("HOST_EXAMPLE_HEADER", None)
+    turnkeyHeader.setDestPath(destinationFolder)
+    turnkeyHeader.setProjectPath("config/" + configName + destinationFolder)
+    turnkeyHeader.setType("HEADER")
+    turnkeyHeader.setMarkup(False)
+    turnkeyHeader.setEnabled(False)
+
     turnkeySrc = comp.createFileSymbol("TURNKEY_SOURCE", None)
     turnkeySrc.setDestPath(destinationFolder)
     turnkeySrc.setProjectPath("config/" + configName + destinationFolder)
@@ -287,6 +425,18 @@ def instantiateComponent(comp):
     turnkeyInterfaceSercomString.setReadOnly(True)
     turnkeyInterfaceSercomString.setVisible(False)
     turnkeyInterfaceSercomString.setDefaultValue("")
+
+    turnkeyInterfaceSercom = comp.createStringSymbol("TOUCH_SERCOM_ENUM_TURNKEY", None)
+    turnkeyInterfaceSercom.setLabel("Sercom Enum For Turnkey")
+    turnkeyInterfaceSercom.setReadOnly(True)
+    turnkeyInterfaceSercom.setVisible(False)
+    turnkeyInterfaceSercom.setDefaultValue("")
+
+    interruptPinEnable = comp.createBooleanSymbol("ENABLE_SYSTICK_FUNCTIONS", None)
+    interruptPinEnable.setLabel("Enable Systick Functions")
+    interruptPinEnable.setReadOnly(True)
+    interruptPinEnable.setVisible(False)
+    interruptPinEnable.setDefaultValue(True)
 
     turnkeyInterfaceString = comp.createStringSymbol("TOUCH_INTERFACE_TURNKEY", None)
     turnkeyInterfaceString.setLabel("Interface For Turnkey")

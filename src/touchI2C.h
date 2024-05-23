@@ -50,8 +50,8 @@
  * 
  */
 
-#ifndef _TOUCH_I2C_H
-#define _TOUCH_I2C_H
+#ifndef TOUCH_I2C_H
+#define TOUCH_I2C_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -74,7 +74,7 @@ void touchI2cInit(callbackTx_T txCallback, callbackRx_T rxCallback);
  * 
  * @param slaveAddr I2C Slave address
  */
-void touchI2cSetSlaveAddress(uint8_t slaveAddr);
+void touchI2cSetSlaveAddress(uint8_t slaveAddrTemp);
 /**
  * @brief Set the memroy address from/to which the data must be read/write
  * 
@@ -90,7 +90,7 @@ void touchI2cSetMemoryAddrss(uint8_t memAddr);
  * 
  * Usage: \n 
  * touchI2cSetSlaveAddress(0x25); \n 
- * touchI2cSetMemoryAddrss(0x10); // Memory address is 0x10 \n 
+ * touchI2cSetMemoryAddrss(0x10); Memory address is 0x10 \n 
  * for(uint8_t cnt = 0; cnt < 10; cnt ++) touchI2cWriteByte(buffer[cnt]);
  * 
  */
@@ -104,7 +104,7 @@ void touchI2cWriteByte(uint8_t data);
  * 
  * Usage: \n 
  * touchI2cSetSlaveAddress(0x25); \n 
- * touchI2cSetMemoryAddrss(0x10); // Memory address is 0x10 \n 
+ * touchI2cSetMemoryAddrss(0x10); Memory address is 0x10 \n 
  * for(uint8_t cnt = 0; cnt < 10; cnt ++) buffer[cnt] = touchI2cReadByte();
  * 
  * @return uint8_t returns read data
@@ -141,6 +141,39 @@ void touchI2cSendDataToAddress(uint8_t slaveAddr, uint8_t memAddr, uint8_t *data
  * @param len length of data that must be read
  */
 void touchI2cReceiveDataFromAddress(uint8_t slaveAddr, uint8_t memAddr, uint8_t *dataptr, transferSize_t len);
+
+
+/**
+ * @brief This function send data "len" number of data from address "memAddr".
+ * It sends write command with first address being memAddr. 
+ * This is a non-blocking code.
+ * The completion is indicated by txCallback function registered in touchI2cInit 
+ * 
+ * Usage: \n 
+ * touchI2cSendDataTo_16bit_Address(0x25, 0x10, &buffer[0], 10);
+ * 
+ * @param slaveAddr slave address
+ * @param memAddr memory address to which data must be written
+ * @param dataptr pointer from which data must be written
+ * @param len length of data that must be written
+ */
+void touchI2cSendDataTo_16bit_Address(uint8_t slaveAddr, uint16_t memAddr, const uint8_t *dataptr, transferSize_t len);
+/**
+ * @brief This function receives data "len" number of data from address "memAddr".
+ * First it sents a I2C write command with data as "memAddr"
+ * Second it sends I2C read command for length defined by "len"
+ * This is a non-blocking code.
+ * The completion is indicated by rxCallback function registered in touchI2cInit 
+ * 
+ * Usage: \n 
+ * touchI2cReceiveDataFrom_16bit_Address(0x25, 0x10, &buffer[0], 10);
+ * 
+ * @param slaveAddr slave address
+ * @param memAddr memory address from which data must be read
+ * @param dataptr pointer to which data must be read
+ * @param len length of data that must be read
+ */
+void touchI2cReceiveDataFrom_16bit_Address(uint8_t slaveAddr, uint16_t memAddr, uint8_t *dataptr, transferSize_t len);
 
 #endif /* _touchI2C_H */
 /*******************************************************************************

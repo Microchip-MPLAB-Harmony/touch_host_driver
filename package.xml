@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Package name="touch_host_driver">
     <Dependencies>
-        <Dependency name="csp" version="v3.11.0"/>
+        <Dependency name="csp" version="v3.19.6"/>
     </Dependencies>
 </Package>

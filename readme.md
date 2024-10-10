@@ -17,7 +17,7 @@ MPLAB® Harmony 3 is an extension of the MPLAB® ecosystem for creating embedded
 - [Microchip MPLAB® Harmony](https://www.microchip.com/mplab/mplab-harmony)
 - [Microchip MPLAB® Harmony Pages](https://microchip-mplab-harmony.github.io/)
 
-This repository contains the MPLAB® Harmony 3 Touch Host driver solutions and example applications. Refer to the following links for release notes, training materials, and interface reference information.
+ Refer to the following links for release notes, training materials, and interface reference information.
 
 - [Release Notes](release_notes.md)
 - [MPLAB® Harmony License](mplab_harmony_license.md)
@@ -27,19 +27,16 @@ This repository contains the MPLAB® Harmony 3 Touch Host driver solutions and e
 
 | Folder     | Description                                               |
 | ---        | ---                                                       |
-| apps        | Example applications      			`					|
-| config        | Configuration files      			`					|
-| src        | Source files  			`					|
-| docs        | Help documentation                       		|
+| config     | Configuration files      			`					 |
+| src        | Source files  			`					             |
+| docs       | Help documentation                       		         |
 
-
-| [AT42QT1110 Examples](apps/AT42QT1110/readme.md)| Examples using AT42QT1110 and different xplained Pros |
-| [AT42QT2120 Examples](apps/AT42QT2120/readme.md)| Examples using AT42QT2120 and different xplained Pros |
 
 ____
 
 ____
-
+[![Developer Help](https://img.shields.io/badge/Youtube-Developer%20Help-red.svg)](https://www.youtube.com/MicrochipDeveloperHelp)
+[![Developer Help](https://img.shields.io/badge/XWiki-Developer%20Help-torquiose.svg)](https://developerhelp.microchip.com/xwiki/bin/view/software-tools/harmony/)
 [![Follow us on Youtube](https://img.shields.io/badge/Youtube-Follow%20us%20on%20Youtube-red.svg)](https://www.youtube.com/user/MicrochipTechnology)
 [![Follow us on LinkedIn](https://img.shields.io/badge/LinkedIn-Follow%20us%20on%20LinkedIn-blue.svg)](https://www.linkedin.com/company/microchip-technology)
 [![Follow us on Facebook](https://img.shields.io/badge/Facebook-Follow%20us%20on%20Facebook-blue.svg)](https://www.facebook.com/microchiptechnology/)

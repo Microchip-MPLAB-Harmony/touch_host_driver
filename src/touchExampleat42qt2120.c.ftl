@@ -43,7 +43,7 @@ int touch_mainloop_example(void)
   touchTuneInit();
 </#if>
 </#if>
-  while (1)
+  while (true)
   {
 
     touchDeviceProcess();

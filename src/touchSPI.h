@@ -43,8 +43,8 @@
  *******************************************************************************/
 //DOM-IGNORE-END
 
-#ifndef _TOUCH_SPI_H
-#define _TOUCH_SPI_H
+#ifndef TOUCH_SPI_H
+#define TOUCH_SPI_H
 
 #include "touch_host_driver.h"
 
@@ -63,7 +63,7 @@ void touchSPIDeactivateSS(void);
 void touchSPIActivateSS(void);
 
 
-#endif /* _TOUCH_SPI_H */
+#endif /* TOUCH_SPI_H */
 /*******************************************************************************
  End of File
  */

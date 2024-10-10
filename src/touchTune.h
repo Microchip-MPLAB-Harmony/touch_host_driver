@@ -56,20 +56,20 @@
 
 #if DEF_TOUCH_DATA_STREAMER_ENABLE == 1U
 
-#define DV_HEADER    0x55 
-#define DV_FOOTER    0xAA 
+#define DV_HEADER    0x55u
+#define DV_FOOTER    0xAAu
 
-#define UART_RX_BUF_LENGTH 60
+#define UART_RX_BUF_LENGTH 60u
 
-#define HEADER_AWAITING 0
-#define HEADER_RECEIVED 1
-#define DATA_AWAITING 2
-#define DATA_RECEIVED 3
+#define HEADER_AWAITING 0u
+#define HEADER_RECEIVED 1u
+#define DATA_AWAITING 2u
+#define DATA_RECEIVED 3u
 
 
-#define SEND_DEBUG_DATA		 0x8000
+#define SEND_DEBUG_DATA		 0x8000u
 
-#define ZERO 0x00  
+#define ZERO 0x00u
 
 typedef enum
 {
@@ -115,10 +115,9 @@ typedef enum
 
 
 void touchTuneProcess(void);
-void touchUartRxComplete(uintptr_t touchUart);
-void touchUartTxComplete(uintptr_t touchUart);
+void touchUartTxComplete(uintptr_t lTouchUart);
+void touchUartRxComplete(uintptr_t lTouchUart);
 void touchTuneNewDataAvailable(void);
-extern volatile uint16_t command_flags;
 
 void touchTuneInit(void);
 

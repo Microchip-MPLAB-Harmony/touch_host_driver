@@ -60,24 +60,27 @@
 // *****************************************************************************
 // *****************************************************************************
 
-uintptr_t touchSPI;
+static uintptr_t touchSPI;
 
-callbackTx_T txCompleteCallback;
-callbackRx_T rxCompleteCallback;
+static callbackTx_T txCompleteCallback;
+static callbackRx_T rxCompleteCallback;
 
 static volatile uint8_t rxData;
 
-void touchSPITransferComplete(uintptr_t touchSPI){
+void touchSPITransferComplete(uintptr_t touchSPI_parm);
+void touchSPIRxComplete(uintptr_t touchSPI_parm);
+
+void touchSPITransferComplete(uintptr_t touchSPI_parm){
     if(txCompleteCallback != NULL){
         txCompleteCallback();
     }
 }
 
-void touchSPIRxComplete(uintptr_t touchSPI){
+void touchSPIRxComplete(uintptr_t touchSPI_parm){
     if(rxCompleteCallback != NULL){
         rxCompleteCallback(rxData);
     }
-    ${TOUCH_SERCOM_TURNKEY}_Read((void *) &rxData,1);
+   (void) ${TOUCH_SERCOM_TURNKEY}_Read((void *) &rxData,1);
 }
 
 void touchSPIInit(callbackTx_T txCallback, callbackRx_T rxCallback) {
@@ -89,11 +92,11 @@ void touchSPIInit(callbackTx_T txCallback, callbackRx_T rxCallback) {
 }
 
 void touchSPISendData(uint8_t *buffer, transferSize_t len){
-    ${TOUCH_SERCOM_TURNKEY}_Write((void *) buffer, len);
+   (void) ${TOUCH_SERCOM_TURNKEY}_Write((void *) buffer, len);
 }
 
 void touchSPIReadWrite(uint8_t *txBuffer, transferSize_t txSize, uint8_t* rxBuffer, transferSize_t rxSize){
-    ${TOUCH_SERCOM_TURNKEY}_WriteRead(txBuffer, txSize, rxBuffer, rxSize);
+   (void) ${TOUCH_SERCOM_TURNKEY}_WriteRead(txBuffer, txSize, rxBuffer, rxSize);
 }
 
 void touchSPIActivateSS(void) {
@@ -107,9 +110,15 @@ void touchSPIDeactivateSS(void) {
 }
 
 uint8_t touchSPIExchangeData(uint8_t txdata) {
-    uint8_t rxdata;
-    ${TOUCH_SERCOM_TURNKEY}_WriteRead(&txdata, 1, &rxdata, 1);
-    while(${TOUCH_SERCOM_TURNKEY}_IsBusy());
+        static uint8_t rxdata = 0u;
+    
+    static uint8_t l_txdata = 0u;
+    l_txdata = txdata;
+    (void)${TOUCH_SERCOM_TURNKEY}_WriteRead(&l_txdata, 1, &rxdata, 1);
+     do
+    {
+        ; // do nothing...
+    }while(${TOUCH_SERCOM_TURNKEY}_IsBusy());
     return rxdata;
 }
 

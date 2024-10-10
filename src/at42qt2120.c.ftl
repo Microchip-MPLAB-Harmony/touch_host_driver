@@ -60,28 +60,34 @@
 // *****************************************************************************
 // *****************************************************************************
 
-volatile uint8_t touchDeviceDataReceived;
-volatile uint8_t touchDeviceTransmitInProgress;
+static volatile uint8_t touchDeviceDataReceived;
+static volatile uint8_t touchDeviceTransmitInProgress;
 volatile uint8_t timeToRead;
 #define NUM_OF_TRY 500u
 CommunicationStatus_t communicationStatus;
 configurationDataT configData;
 debugDataT debugData;
 statusDataT statusData;
-touchI2CState_t touchI2CState = STATE_INVALID;
+static touchI2CState_t touchI2CState = STATE_INVALID;
+
+static uint8_t touchDeviceVerifyChipID(void);
+void touchDeviceReadConfigurationData(void);
+void touchDeviceReadDebugData(void);
+void touchDeviceReadStatusData(void);
+void touchDeviceProcessData(void);
 
 static uint8_t touchDeviceVerifyChipID(void)
 {
-    uint8_t retvar = 0;
+    uint8_t retvar = 0u;
     touchI2cSetMemoryAddrss(getChipIDAddress());
     if (touchI2cReadByte() == getDeviceExpectedChipID())
     {
-        retvar = 1;
-        communicationStatus.initError = 0;
+        retvar = 1u;
+        communicationStatus.initError = 0u;
     }
     else
     {
-        communicationStatus.initError = 1;
+        communicationStatus.initError = 1u;
     }
 
     return retvar;
@@ -90,48 +96,48 @@ static uint8_t touchDeviceVerifyChipID(void)
 void touchDeviceReadConfigurationData(void)
 {
     uint8_t address = getConfigStartAddress();
-    uint8_t try = 0;
+    uint16_t try = 0u;
     touchDeviceDataReceived = 0;
     do
     {
         try++;
-        touchI2cReceiveDataFromAddress(SLAVE_DEVICE_ADDRESS, address, (uint8_t *)&configData.lowPowerMode, sizeof(configData));
-    } while ((touchDeviceDataReceived == 0) && (try < NUM_OF_TRY));
+        touchI2cReceiveDataFromAddress(SLAVE_DEVICE_ADDRESS, address, (uint8_t *)&configData.lowPowerMode, (transferSize_t)sizeof(configData));
+    } while ((touchDeviceDataReceived == 0u) && (try < NUM_OF_TRY));
     if (try >= NUM_OF_TRY)
     {
-        communicationStatus.ConfigDataError = 1;
+        communicationStatus.ConfigDataError = 1u;
     }
 }
 
 void touchDeviceReadDebugData(void)
 {
     uint8_t address = getDebugDataStartAddress();
-    uint8_t try = 0;
-    touchDeviceDataReceived = 0;
+    uint16_t try = 0u;
+    touchDeviceDataReceived = 0u;
     do
     {
         try++;
-        touchI2cReceiveDataFromAddress(SLAVE_DEVICE_ADDRESS, address, (uint8_t *)&debugData.key_signal[0], sizeof(debugData));
-    } while ((touchDeviceDataReceived == 0) && (try < NUM_OF_TRY));
+        touchI2cReceiveDataFromAddress(SLAVE_DEVICE_ADDRESS, address, (uint8_t *)&debugData.key_signal[0], (transferSize_t)sizeof(debugData));
+    } while ((touchDeviceDataReceived == 0u) && (try < NUM_OF_TRY));
     if (try >= NUM_OF_TRY)
     {
-        communicationStatus.DebugDataError = 1;
+        communicationStatus.DebugDataError = 1u;
     }
 }
 
 void touchDeviceReadStatusData(void)
 {
     uint8_t address = getChipIDAddress();
-    uint8_t try = 0;
-    touchDeviceDataReceived = 0;
+    uint16_t try = 0;
+    touchDeviceDataReceived = 0u;
     do
     {
         try++;
-        touchI2cReceiveDataFromAddress(SLAVE_DEVICE_ADDRESS, address, (uint8_t *)&statusData.chip_id, sizeof(statusData));
-    } while ((touchDeviceDataReceived == 0) && (try < NUM_OF_TRY));
+        touchI2cReceiveDataFromAddress(SLAVE_DEVICE_ADDRESS, address, (uint8_t *)&statusData.chip_id, (transferSize_t)sizeof(statusData));
+    } while ((touchDeviceDataReceived == 0u) && (try < NUM_OF_TRY));
     if (try >= NUM_OF_TRY)
     {
-        communicationStatus.StatusDataError = 1;
+        communicationStatus.StatusDataError = 1u;
     }
 }
 
@@ -146,10 +152,10 @@ void touchDeviceProcessData(void)
 
 void touchDeviceProcess(void)
 {
-    static uint8_t init = 0;
-    if (init == 0)
+    static uint8_t init = 0u;
+    if (init == 0u)
     {
-        init = 1;
+        init = 1u;
         touchDeviceInit();
 <#if ENABLE_TUNE_OPTION??>
 <#if ENABLE_TUNE_OPTION == true>
@@ -161,9 +167,9 @@ void touchDeviceProcess(void)
     touchI2CState = READ_DEBUG_DATA_FROM_TOUCH;
     touchDeviceReadDebugData();
 
-    if (touchDeviceDataReceived == 1)
+    if (touchDeviceDataReceived == 1u)
     {
-        touchDeviceDataReceived = 0;
+        touchDeviceDataReceived = 0u;
         switch (touchI2CState)
         {
 
@@ -182,6 +188,7 @@ void touchDeviceProcess(void)
             touchI2CState = STATE_INVALID;
             break;
         default:
+            ;   // do nothing...
             break;
         }
     }
@@ -189,19 +196,19 @@ void touchDeviceProcess(void)
 
 void touchDeviceRxCompleteCallback(uint8_t data)
 {
-    touchDeviceDataReceived = 1;
+    touchDeviceDataReceived = 1u;
 }
 
 void touchDeviceTxCompleteCallback(void)
 {
-    touchDeviceTransmitInProgress = 0;
+    touchDeviceTransmitInProgress = 0u;
 }
 
 void touchDeviceInit(void)
 {
     touchI2cInit(touchDeviceTxCompleteCallback, touchDeviceRxCompleteCallback);
     touchI2cSetSlaveAddress(SLAVE_DEVICE_ADDRESS);
-    if (touchDeviceVerifyChipID())
+    if (touchDeviceVerifyChipID() == 1u)
     {
         touchDeviceReadConfigurationData();
         touchDeviceReadDebugData();

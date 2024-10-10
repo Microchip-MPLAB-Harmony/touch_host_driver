@@ -43,8 +43,8 @@
  *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _AT42QT2120_H
-#define _AT42QT2120_H
+#ifndef AT42QT2120_H
+#define AT42QT2120_H
 
 #include "touch_host_driver.h"
 
@@ -146,8 +146,8 @@ typedef union
 {
   struct
   {
-    uint8_t scale : 4;
-    uint8_t pulse : 4;
+    unsigned int scale : 4;
+    unsigned int pulse : 4;
   } bits;
   uint8_t reg;
 } pulseScale_t;
@@ -156,11 +156,11 @@ typedef union
 {
   struct
   {
-    uint8_t en : 1;
-    uint8_t gpo : 1;
-    uint8_t aks : 2;
-    uint8_t guard : 1;
-    uint8_t reserved : 3;
+    unsigned int en : 1;
+    unsigned int gpo : 1;
+    unsigned int aks : 2;
+    unsigned int guard : 1;
+    unsigned int reserved : 3;
   } bits;
   uint8_t reg;
 } keyControl_t;
@@ -198,7 +198,7 @@ typedef struct
 #define getChipIDAddress() 0
 #define getConfigStartAddress() LOW_POWER_MODE_ADDRESS
 #define getDebugDataStartAddress() KEY0_SIGNAL_ADDRESS
-#define getDeviceExpectedChipID() 0x3E
+#define getDeviceExpectedChipID() 0x3Eu
 typedef qt2120ConfigRegisters configurationDataT;
 typedef qt2120DebugDataRegister debugDataT;
 typedef qt2120StatusRegister statusDataT;
@@ -227,7 +227,12 @@ void touchDeviceTxCompleteCallback(void);
 
 extern volatile uint8_t timeToRead;
 
-#endif /* _AT42QT2120_H */
+extern debugDataT debugData;
+extern configurationDataT configData;
+extern statusDataT statusData;
+extern CommunicationStatus_t communicationStatus;
+
+#endif /* AT42QT2120_H */
 /*******************************************************************************
  End of File
  */

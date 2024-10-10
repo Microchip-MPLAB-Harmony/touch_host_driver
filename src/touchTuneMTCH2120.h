@@ -173,7 +173,7 @@ extern uint16_t mtch2120_compensationCapacitance[DEF_NUM_SENSORS]; // CC
  
 extern mtch2120_SensorControl_t mtch2120_sensorControl[DEF_NUM_SENSORS];
 extern uint8_t mtch2120_CSD[DEF_NUM_SENSORS];
-extern uint8_t mtch2120_measurementFrequency[DEF_NUM_SENSORS];
+extern uint8_t mtch2120_measurementClkFreq[DEF_NUM_SENSORS];
 extern uint8_t mtch2120_filterlevel[DEF_NUM_SENSORS];
 extern uint8_t mtch2120_threshold[DEF_NUM_SENSORS];  
 extern uint8_t mtch2120_gain[DEF_NUM_SENSORS];

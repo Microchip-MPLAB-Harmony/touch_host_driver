@@ -345,17 +345,20 @@ def instantiateComponent(comp):
     deviceSelect = comp.createComboSymbol("SELECT_TURNKEY_DEVICE", None, possibleDeviceList)
     deviceSelect.setLabel("Select Turnkey Device")
     deviceSelect.setDependencies(deviceSelectCallback,["SELECT_TURNKEY_DEVICE"])
+    deviceSelect.setHelp("touch-host-config")
 
     interruptPinEnable = comp.createBooleanSymbol("ENABLE_INT_PIN", None)
     interruptPinEnable.setLabel("Enable INT Pin")
     interruptPinEnable.setDefaultValue(False)
     interruptPinEnable.setDependencies(interruptPinOption,["ENABLE_INT_PIN"])
     interruptPinEnable.setVisible(False)
+    interruptPinEnable.setHelp("touch-host-config")
 
     interruptPinName = comp.createStringSymbol("INT_PIN_NAME", None)
     interruptPinName.setLabel("INTERRUPT Pin Name")
     interruptPinName.setDefaultValue("INT_PIN")
     interruptPinName.setVisible(False)
+    interruptPinName.setHelp("touch-host-config")
 
     intPinWarning = comp.createCommentSymbol("INT_PIN_WARNING", None)
     intPinWarning.setLabel("Warning!!! Configure Interrupt Pin as input with Pull up enabled")
@@ -366,11 +369,13 @@ def instantiateComponent(comp):
     interruptPinEnable.setDefaultValue(False)
     interruptPinEnable.setDependencies(interruptPinOption,["ENABLE_CHANGE_PIN"])
     interruptPinEnable.setVisible(False)
+    interruptPinEnable.setHelp("touch-host-config")
 
     interruptPinName = comp.createStringSymbol("CHANGE_PIN_NAME", None)
     interruptPinName.setLabel("CHANGE Pin Name")
     interruptPinName.setDefaultValue("CHANGE_PIN")
     interruptPinName.setVisible(False)
+    interruptPinName.setHelp("touch-host-config")
 
     intPinWarning = comp.createCommentSymbol("CHANGE_PIN_WARNING", None)
     intPinWarning.setLabel("Warning!!! CHANGE PIN needs to be configured in Pin Manager")
@@ -382,6 +387,7 @@ def instantiateComponent(comp):
     tuneOption.setDefaultValue(False)
     tuneOption.setDescription("The Data Visualizer allows touch sensor debug information to be relayed on the UART interface to Data Visualizer software tool. This setting should be enabled for initial sensor tuning and can be disabled later to avoid using USART and additionally save code memory. More information can be found in Microchip Developer Help page.")
     tuneOption.setDependencies(tuningOptionUpdate,["ENABLE_TUNE_OPTION"])
+    tuneOption.setHelp("touch-host-config")
 
     turnkeyCommonHeader = comp.createFileSymbol("TURNKEY_COMMON_HEADER", None)
     turnkeyCommonHeader.setSourcePath("/src/touch_host_driver.h.ftl")

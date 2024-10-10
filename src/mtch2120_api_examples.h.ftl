@@ -521,11 +521,11 @@
 //}
 
 
-/////////////// get Measurement Frequency value from all the channels ////////////////////////////////////////////////////////////////////////////////////////////////
-//uint8_t measurementFrequency_l[DEF_NUM_SENSORS];
+/////////////// get Measurement Clock Frequency value from all the channels ////////////////////////////////////////////////////////////////////////////////////////////////
+//uint8_t measurementClkFreq_l[DEF_NUM_SENSORS];
 //uint8_t offset = 0;    // calculated as per mtch2120 datasheet
 //MTCH2120_I2C_Status i2cStatus = SUCCESS;
-//i2cStatus = mtch2120_readFromMemory(((uint16_t)ADDR_MEASUREMENT_CLOCK | offset), (uint8_t*)measurementFrequency_l, (uint8_t)sizeof(measurementFrequency_l));
+//i2cStatus = mtch2120_readFromMemory(((uint16_t)ADDR_MEASUREMENT_CLK_FREQ | offset), (uint8_t*)measurementClkFreq_l, (uint8_t)sizeof(measurementClkFreq_l));
 //if(i2cStatus == SUCCESS)
 //{
 //    // success
@@ -535,12 +535,12 @@
 //    // failed to read
 //}
 
-/////////////// get Measurement Frequency value from channel 1 ////////////////////////////////////////////////////////////////////////////////////////////////
-//uint8_t measurementFrequency_l = 0u;
+/////////////// get Measurement Clock Frequency value from channel 1 ////////////////////////////////////////////////////////////////////////////////////////////////
+//uint8_t measurementClkFreq_l = 0u;
 //const uint8_t channelNumber = 1u;
 //MTCH2120_I2C_Status i2cStatus = SUCCESS;
 //
-//i2cStatus = mtch2120_getMeasurementClock(channelNumber, (uint8_t*)&measurementFrequency_l);
+//i2cStatus = mtch2120_getMeasurementClock(channelNumber, (uint8_t*)&measurementClkFreq_l);
 //if(i2cStatus == SUCCESS)
 //{
 //    // success
@@ -551,14 +551,14 @@
 //}
 
 
-/////////////// get Measurement Frequency value to all the channels ////////////////////////////////////////////////////////////////////////////////////////////////
-//uint8_t measurementFrequency_l[DEF_NUM_SENSORS] = 
+/////////////// set Measurement Clock Frequency value to all the channels ////////////////////////////////////////////////////////////////////////////////////////////////
+//uint8_t measurementClkFreq_l[DEF_NUM_SENSORS] = 
 //{
-//    16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u
+//    3u, 3u, 3u, 3u, 3u, 3u, 3u, 3u, 3u, 3u, 3u, 3u, 3u, 3u, 3u, 3u
 //};
 //uint8_t offset = 0;    // calculated as per mtch2120 datasheet
 //MTCH2120_I2C_Status i2cStatus = SUCCESS;
-//i2cStatus = mtch2120_writeToMemory(((uint16_t)ADDR_MEASUREMENT_CLOCK | offset), (uint8_t*)measurementFrequency_l, (uint8_t)sizeof(measurementFrequency_l));
+//i2cStatus = mtch2120_writeToMemory(((uint16_t)ADDR_MEASUREMENT_CLK_FREQ | offset), (uint8_t*)measurementClkFreq_l, (uint8_t)sizeof(measurementClkFreq_l));
 //if(i2cStatus == SUCCESS)
 //{
 //    // success
@@ -569,12 +569,12 @@
 //}
 
 
-/////////////// set Measurement Frequency value to channel 1 ////////////////////////////////////////////////////////////////////////////////////////////////
-//uint8_t measurementFrequency_l = 8u;
+/////////////// set Measurement Clock Frequency value to channel 1 ////////////////////////////////////////////////////////////////////////////////////////////////
+//uint8_t measurementClkFreq_l = 1u;
 //const uint8_t channelNumber = 1u;
 //MTCH2120_I2C_Status i2cStatus = SUCCESS;
 //
-//i2cStatus = mtch2120_setMeasurementClock(channelNumber, measurementFrequency_l);
+//i2cStatus = mtch2120_setMeasurementClock(channelNumber, measurementClkFreq_l);
 //if(i2cStatus == SUCCESS)
 //{
 //    // success

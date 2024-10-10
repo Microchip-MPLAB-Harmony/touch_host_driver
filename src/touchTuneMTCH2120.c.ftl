@@ -57,7 +57,7 @@ uint16_t mtch2120_compensationCapacitance[DEF_NUM_SENSORS]; // CC
 
 mtch2120_SensorControl_t mtch2120_sensorControl[DEF_NUM_SENSORS];
 uint8_t mtch2120_CSD[DEF_NUM_SENSORS];
-uint8_t mtch2120_measurementFrequency[DEF_NUM_SENSORS];
+uint8_t mtch2120_measurementClkFreq[DEF_NUM_SENSORS];
 uint8_t mtch2120_filterlevel[DEF_NUM_SENSORS];
 uint8_t mtch2120_threshold[DEF_NUM_SENSORS];  
 uint8_t mtch2120_gain[DEF_NUM_SENSORS];
@@ -92,7 +92,7 @@ typedef struct
     uint8_t oversampling_dv;
     uint8_t gain_dv;
     uint8_t csd_dv;
-    uint8_t measurementFrequency;
+    uint8_t measurementClkFreq;
     uint8_t channel_hysteresis_dv;
     uint8_t channel_aks_group_dv;
 }ChannelConfiguration_t;
@@ -475,7 +475,7 @@ void copy_channel_configuration(uint8_t channel_num)
         mtch2120_getOversampling_Config();
         mtch2120_getGain_Config();
         mtch2120_getCSD_Config();
-        mtch2120_getMeasurFreq_Config();
+        mtch2120_getMeasurClkFreq_Config();
         mtch2120_getHysteresis_Config();
         mtch2120_getAKS_Config();
     }
@@ -484,7 +484,7 @@ void copy_channel_configuration(uint8_t channel_num)
     dv_channelConfiguration.oversampling_dv        = mtch2120_filterlevel[channel_num];
     dv_channelConfiguration.gain_dv                = mtch2120_gain[channel_num];
     dv_channelConfiguration.csd_dv                 = mtch2120_CSD[channel_num];
-    dv_channelConfiguration.measurementFrequency   = mtch2120_measurementFrequency[channel_num];
+    dv_channelConfiguration.measurementClkFreq   = mtch2120_measurementClkFreq[channel_num];
     dv_channelConfiguration.channel_hysteresis_dv  = mtch2120_hysteresis[channel_num];
     dv_channelConfiguration.channel_aks_group_dv   = mtch2120_AKSgroup[channel_num];
 
@@ -670,7 +670,7 @@ void update_channel_configuration(uint8_t channel_num)
     mtch2120_filterlevel[channel_num]      = dv_channelConfiguration.oversampling_dv;
     mtch2120_gain[channel_num]              = dv_channelConfiguration.gain_dv;
     mtch2120_CSD[channel_num]               = dv_channelConfiguration.csd_dv;
-    mtch2120_measurementFrequency[channel_num]      = dv_channelConfiguration.measurementFrequency;
+    mtch2120_measurementClkFreq[channel_num]      = dv_channelConfiguration.measurementClkFreq;
     mtch2120_hysteresis[channel_num]     = dv_channelConfiguration.channel_hysteresis_dv;
     mtch2120_AKSgroup[channel_num]       = dv_channelConfiguration.channel_aks_group_dv;
 }
@@ -887,7 +887,7 @@ void uart_recv_frame_data(uint8_t frame_id, uint16_t len)
             mtch2120_setOversampling_Config();
             mtch2120_setGain_Config();
             mtch2120_setCSD_Config();
-            mtch2120_setMeasurFreq_Config();
+            mtch2120_setMeasurClkFreq_Config();
             mtch2120_setHysteresis_Config();
             mtch2120_setAKS_Config();
             

@@ -538,6 +538,7 @@ void touchDeviceTxCompleteCallback(void);
 
 extern at42qt1110DebugData_t at42qt1110DebugData[NO_OF_KEYS];
 extern CommunicationStatus_t communicationStatus;
+extern volatile uint16_t command_flags;
 
 #define TIME_BETWEEN_BYTES_USEC 200u
 #define DEF_STARTUP_TIME 500u

@@ -33,9 +33,9 @@
 // *****************************************************************************
 // *****************************************************************************
 
-int touch_mainloop_example(void);
+void touch_mainloop_example(void);
 
-int touch_mainloop_example(void)
+void touch_mainloop_example(void)
 {
   /* Initialize all modules */
   SYS_Initialize(NULL);
@@ -80,9 +80,9 @@ int touch_mainloop_example(void)
 </#if>
   }
 
-  /* Execution should not come here during normal operation */
 
-  return (EXIT_FAILURE);
+
+  
 }
 
 /*******************************************************************************

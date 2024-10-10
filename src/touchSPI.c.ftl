@@ -65,7 +65,7 @@ static uintptr_t touchSPI;
 static callbackTx_T txCompleteCallback;
 static callbackRx_T rxCompleteCallback;
 
-static volatile uint8_t rxData;
+static uint8_t rxData;
 
 void touchSPITransferComplete(uintptr_t touchSPI_parm);
 void touchSPIRxComplete(uintptr_t touchSPI_parm);
@@ -80,7 +80,7 @@ void touchSPIRxComplete(uintptr_t touchSPI_parm){
     if(rxCompleteCallback != NULL){
         rxCompleteCallback(rxData);
     }
-   (void) ${TOUCH_SERCOM_TURNKEY}_Read((void *) &rxData,1);
+   (void) ${TOUCH_SERCOM_TURNKEY}_Read(&rxData, 1);
 }
 
 void touchSPIInit(callbackTx_T txCallback, callbackRx_T rxCallback) {

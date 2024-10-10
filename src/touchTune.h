@@ -114,6 +114,7 @@ typedef enum
 }ROW_5;
 
 
+
 void touchTuneProcess(void);
 void touchUartTxComplete(uintptr_t lTouchUart);
 void touchUartRxComplete(uintptr_t lTouchUart);

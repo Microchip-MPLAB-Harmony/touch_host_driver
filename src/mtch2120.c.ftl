@@ -253,10 +253,15 @@ MTCH2120_I2C_Status mtch2120_readFromMemory(uint16_t memoryAddress, uint8_t * bu
                 // wait until receive data (or) wait until timeout occurred
                 mtch2120_wait();
                 i2cError = ${TOUCH_SERCOM_TURNKEY}_ErrorGet();
-                if((mtch2120_communicationTimeout == true) || (i2cError != ${TOUCH_SERCOM_ENUM_TURNKEY}_ERROR_NONE))
+                if(i2cError != ${TOUCH_SERCOM_ENUM_TURNKEY}_ERROR_NONE)
                 {
                     retryCount++;
                     i2cStatus = I2C_COMMN_ERROR;
+                }
+                else if (mtch2120_communicationTimeout == true)
+                {
+                    retryCount++;
+                    i2cStatus = I2C_COMMN_ERROR;                    
                 }
                 else
                 {
@@ -307,10 +312,15 @@ MTCH2120_I2C_Status mtch2120_writeToMemory(uint16_t memoryAddress, const uint8_t
                 // wait until receive data (or) wait until timeout occurred
                 mtch2120_wait();
                 i2cError = ${TOUCH_SERCOM_TURNKEY}_ErrorGet();
-                if((mtch2120_communicationTimeout == true) || (i2cError != ${TOUCH_SERCOM_ENUM_TURNKEY}_ERROR_NONE))
+                if(i2cError != ${TOUCH_SERCOM_ENUM_TURNKEY}_ERROR_NONE)
                 {
                     retryCount++;
                     i2cStatus = I2C_COMMN_ERROR;
+                }
+                else if(mtch2120_communicationTimeout == true)
+                {
+                    retryCount++;
+                    i2cStatus = I2C_COMMN_ERROR;                    
                 }
                 else
                 {
@@ -606,19 +616,19 @@ MTCH2120_I2C_Status mtch2120_setGain(uint8_t channel, uint8_t value)
 }
 
 /*******************************************************************************
- * This function get the Measurement Freqeuncy value from the touch module.
+ * This function get the Measurement Clock Freqeuncy value from the touch module.
  * @Param 1  :   Channel number
  * @Param 2  :   buffer to read the status
  * @return   :   status
 *******************************************************************************/
-MTCH2120_I2C_Status mtch2120_getMeasurementFrequency(uint8_t channel, uint8_t *value)
+MTCH2120_I2C_Status mtch2120_getMeasurementClkFreq(uint8_t channel, uint8_t *value)
 {
     uint8_t offset = 0u; 
     MTCH2120_I2C_Status i2c_status = SUCCESS;
     if(channel < DEF_NUM_SENSORS)
     {
         offset = (uint8_t)((uint8_t)sizeof(*value) * (uint8_t)channel);
-        i2c_status = mtch2120_readFromMemory(((uint16_t)ADDR_MEASUREMENT_FREQUENCY | offset), value, 1u);
+        i2c_status = mtch2120_readFromMemory(((uint16_t)ADDR_MEASUREMENT_CLK_FREQ | offset), value, 1u);
     }
     else
     {
@@ -628,19 +638,19 @@ MTCH2120_I2C_Status mtch2120_getMeasurementFrequency(uint8_t channel, uint8_t *v
 }
 
 /*******************************************************************************
- * This function set the Measurement Freqeuncy value from the touch module.
+ * This function set the Measurement Clock Freqeuncy value from the touch module.
  * @Param 1  :   Channel number
  * @Param 2  :   buffer to read the status
  * @return   :   status
 *******************************************************************************/
-MTCH2120_I2C_Status mtch2120_setMeasurementFrequency(uint8_t channel, uint8_t value)
+MTCH2120_I2C_Status mtch2120_setMeasurementClkFreq(uint8_t channel, uint8_t value)
 {
     uint8_t offset = 0u; 
     MTCH2120_I2C_Status i2c_status = SUCCESS;
     if(channel < DEF_NUM_SENSORS)
     {
         offset = (uint8_t)((uint8_t)sizeof(value) * (uint8_t)channel);
-        i2c_status = mtch2120_writeToMemory(((uint16_t)ADDR_MEASUREMENT_FREQUENCY | offset), (uint8_t*)&value, 1u);
+        i2c_status = mtch2120_writeToMemory(((uint16_t)ADDR_MEASUREMENT_CLK_FREQ | offset), (uint8_t*)&value, 1u);
     }
     else
     {
@@ -943,11 +953,11 @@ void mtch2120_setGain_Config(void)
     }
 }
 
-void mtch2120_setMeasurFreq_Config(void)
+void mtch2120_setMeasurClkFreq_Config(void)
 {
     MTCH2120_I2C_Status i2cStatus = SUCCESS;
     mtch2120_communicationStatus.ConfigDataError = 0u;
-    i2cStatus = mtch2120_writeToMemory(((uint16_t)ADDR_MEASUREMENT_FREQUENCY | FROM_OFFSET_0), (uint8_t*)mtch2120_measurementFrequency, DEF_NUM_SENSORS);
+    i2cStatus = mtch2120_writeToMemory(((uint16_t)ADDR_MEASUREMENT_CLK_FREQ | FROM_OFFSET_0), (uint8_t*)mtch2120_measurementClkFreq, DEF_NUM_SENSORS);
     if(i2cStatus != SUCCESS)
     {
         mtch2120_communicationStatus.ConfigDataError = 1u;
@@ -1141,11 +1151,11 @@ void mtch2120_getGain_Config(void)
     }
 }
 
-void mtch2120_getMeasurFreq_Config(void)
+void mtch2120_getMeasurClkFreq_Config(void)
 {
     MTCH2120_I2C_Status i2cStatus = SUCCESS;
     mtch2120_communicationStatus.ConfigDataError = 0u;
-    i2cStatus = mtch2120_readFromMemory(((uint16_t)ADDR_MEASUREMENT_FREQUENCY | FROM_OFFSET_0), (uint8_t*)mtch2120_measurementFrequency, DEF_NUM_SENSORS);
+    i2cStatus = mtch2120_readFromMemory(((uint16_t)ADDR_MEASUREMENT_CLK_FREQ | FROM_OFFSET_0), (uint8_t*)mtch2120_measurementClkFreq, DEF_NUM_SENSORS);
     if(i2cStatus != SUCCESS)
     {
         mtch2120_communicationStatus.ConfigDataError = 1u;
@@ -1207,7 +1217,7 @@ void mtch2120_getAllConfigurations(void)
     mtch2120_getThreshold_Config();
     mtch2120_getOversampling_Config();
     mtch2120_getGain_Config();
-    mtch2120_getMeasurFreq_Config();
+    mtch2120_getMeasurClkFreq_Config();
     mtch2120_getCSD_Config();
     mtch2120_getHysteresis_Config();
     mtch2120_getAKS_Config();
@@ -1387,7 +1397,7 @@ void mtch2120_setDeviceConfiguration(void)
             }
 
             // write PTC pre-scalar value from the touch module
-            i2cStatus = mtch2120_writeToMemory(((uint16_t)ADDR_MEASUREMENT_FREQUENCY | FROM_OFFSET_0), (uint8_t*)mtch2120_measurementFrequency, DEF_NUM_SENSORS);
+            i2cStatus = mtch2120_writeToMemory(((uint16_t)ADDR_MEASUREMENT_CLK_FREQ | FROM_OFFSET_0), (uint8_t*)mtch2120_measurementClkFreq, DEF_NUM_SENSORS);
             if(i2cStatus != SUCCESS)
             {
                 break;

@@ -76,7 +76,7 @@
 #define GPIO_PIN_OFFSET         0u
 #define GPIO_PIN_LEN            8u
 
-#define GPIO_DIR_OFFSET         7u
+#define GPIO_DIR_OFFSET         8u
 #define GPIO_DIR_LEN            8u
 
 #define GPIO_OUT_OFFSET         16u
@@ -230,7 +230,7 @@ enum MemoryAddress
     ADDR_NODE_CC                     = SHIFT_LEFT(5),
     ADDR_SENSOR_CONTROL              = SHIFT_LEFT(14),
     ADDR_CSD                         = SHIFT_LEFT(15),
-    ADDR_MEASUREMENT_FREQUENCY       = SHIFT_LEFT(16),
+    ADDR_MEASUREMENT_CLK_FREQ        = SHIFT_LEFT(16),
     ADDR_OVERSAMPLING                = SHIFT_LEFT(17),
     ADDR_THRESHOLD                   = SHIFT_LEFT(18),
     ADDR_GAIN                        = SHIFT_LEFT(19),
@@ -256,10 +256,10 @@ enum MemoryAddress
  **/
 typedef enum
 {
-    SUCCESS                     = 0,         // 0000 0000
+    SUCCESS                     = 0u,        // 0000 0000
     NOT_INITIALIZED             = 1u,        // 0000 0001
     INVALIED_INPUT_PARAMETER    = 2u,        // 0000 0010
-    I2C_COMMN_ERROR                   = 4u,        // 0000 0100
+    I2C_COMMN_ERROR             = 4u         // 0000 0100
 }MTCH2120_I2C_Status;
 
 extern uint8_t mtch2120_deviceAddress;
@@ -284,7 +284,7 @@ void mtch2120_setSensorControl_Config(void);
 void mtch2120_setThreshold_Config(void);
 void mtch2120_setOversampling_Config(void);
 void mtch2120_setGain_Config(void);
-void mtch2120_setMeasurFreq_Config(void);
+void mtch2120_setMeasurClkFreq_Config(void);
 void mtch2120_setCSD_Config(void);
 void mtch2120_setHysteresis_Config(void);
 void mtch2120_setAKS_Config(void);
@@ -302,7 +302,7 @@ void mtch2120_getSensorControl_Config(void);
 void mtch2120_getThreshold_Config(void);
 void mtch2120_getOversampling_Config(void);
 void mtch2120_getGain_Config(void);
-void mtch2120_getMeasurFreq_Config(void);
+void mtch2120_getMeasurClkFreq_Config(void);
 void mtch2120_getCSD_Config(void);
 void mtch2120_getHysteresis_Config(void);
 void mtch2120_getAKS_Config(void);
@@ -449,20 +449,20 @@ MTCH2120_I2C_Status mtch2120_getGain(uint8_t channel, uint8_t *value);
 MTCH2120_I2C_Status mtch2120_setGain(uint8_t channel, uint8_t value);
 
 /*******************************************************************************
- * This function get the Measurement Frequency value from the touch module.
+ * This function get the Measurement Clock Frequency value from the touch module.
  * @Param 1  :   Channel number
  * @Param 2  :   buffer to read the status
  * @return   :   status
 *******************************************************************************/
-MTCH2120_I2C_Status mtch2120_getMeasurementFrequency(uint8_t channel, uint8_t *value);
+MTCH2120_I2C_Status mtch2120_getMeasurementClkFreq(uint8_t channel, uint8_t *value);
 
 /*******************************************************************************
- * This function set the Measurement Frequency value from the touch module.
+ * This function set the Measurement Clock Frequency value from the touch module.
  * @Param 1  :   Channel number
  * @Param 2  :   buffer to read the status
  * @return   :   status
 *******************************************************************************/
-MTCH2120_I2C_Status mtch2120_setMeasurementFrequency(uint8_t channel, uint8_t value);
+MTCH2120_I2C_Status mtch2120_setMeasurementClkFreq(uint8_t channel, uint8_t value);
 
 /*******************************************************************************
  * This function get the CSD value from the touch module.

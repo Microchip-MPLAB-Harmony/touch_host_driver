@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Module name="Touch Host Driver" id="9a16e9e5-e59d-41f1-bc4e-0c36fa3fd570" version="1.0.0">
+<Module name="Touch Host Driver" id="9a16e9e5-e59d-41f1-bc4e-0c36fa3fd570" version="1.1.0">
     <ConfigRoot path="config/module.py"/>
 </Module>

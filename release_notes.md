@@ -16,6 +16,9 @@
 * MPLAB® Touch Plugin v2.3.0
 ### Required MPLAB® Harmony v3.x.x Modules 
 * csp v3.19.6
+### Known Issues
+**The I2C/SPI bus used by Touch Host Driver cannot be used by other Harmony drivers.**
+
 
 ## Touch Host Driver v1.0.0 Release
 ### NEW FEATURES
